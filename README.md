@@ -1,11 +1,11 @@
 # Tic-Tac-Toe
 Tic-Tac-Toe Pro 🎮
-A modern, responsive, and feature-rich Tic-Tac-Toe web application built with vanilla HTML, CSS, and JavaScript. This project enhances the classic game with a clean UI, player customization, and session-based score tracking.
+A modern and responsive Tic-Tac-Toe web application built with HTML, CSS, and JavaScript. This project enhances the classic game with a clean UI, player customization, and session-based score tracking.
 
-[➡️ Live Demo Link Here] (You can host this on GitHub Pages, Netlify, or Vercel)
+[[➡️ Give a Try](https://tic-tac-toe-seven-swart-39.vercel.app/)]
 
 🚀 About The Project
-This isn't just a simple Tic-Tac-Toe game. It was built to demonstrate core web development skills, including DOM manipulation, event handling, and client-side storage, all wrapped in a polished and user-friendly interface. The goal was to take a simple concept and elevate it into a complete, professional-looking web application.
+This isn't just a simple Tic-Tac-Toe game. It including DOM manipulation, event handling, and client-side storage, all wrapped in a polished and user-friendly interface. The goal was to take a simple concept and elevate it into a Fun web application.
 
 ✨ Features
 Player Name Customization: A startup screen allows players to enter their names for a personalized experience.
@@ -36,7 +36,7 @@ To get a local copy up and running, simply follow these steps:
 
 Clone the repository:
 
-git clone [https://github.com/your-username/your-repo-name.git](https://github.com/your-username/your-repo-name.git)
+git clone [https://github.com/your-username/your-repo-name.git](https://github.com/amanmr795/Tic-Tac-Toe.git)
 
 Navigate to the project directory:
 

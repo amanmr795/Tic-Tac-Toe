@@ -17,17 +17,12 @@ const p2NameDisplay = document.querySelector("#p2-name");
 const scoreXDisplay = document.querySelector("#score-x");
 const scoreODisplay = document.querySelector("#score-o");
 
+
 // Game State Variables
-let turnO = true; // true for O's turn, false for X's turn
-let moveCount = 0; // To track moves for draw condition
-let players = {
-    x: "Player 1",
-    o: "Player 2"
-};
-let scores = {
-    x: 0,
-    o: 0
-};
+let turnO = true;
+let moveCount = 0;
+let players = { x: "Player 1", o: "Player 2" };
+let scores = { x: 0, o: 0 };
 
 const winPatterns = [
     [0, 1, 2], [0, 3, 6], [0, 4, 8],
@@ -35,65 +30,38 @@ const winPatterns = [
     [3, 4, 5], [6, 7, 8],
 ];
 
-// --- Core Functions ---
+// --- Core Game Functions ---
 
-const enableBoxes = () => {
-    for (let box of boxes) {
-        box.disabled = false;
-        box.innerText = "";
-        box.classList.remove("x-text", "o-text");
-    }
+const resetBoard = () => {
+    turnO = true;
+    moveCount = 0;
+    enableBoxes();
+    msgContainer.classList.add("hide");
+    updateTurnIndicator();
 };
 
-const disableBoxes = () => {
-    for (let box of boxes) {
-        box.disabled = true;
-    }
-};
-
-const updateTurnIndicator = () => {
-    const currentPlayerName = turnO ? players.o : players.x;
-    const currentPlayerSymbol = turnO ? "O" : "X";
-    turnIndicator.innerText = `${currentPlayerName}'s Turn (${currentPlayerSymbol})`;
-};
-
-const handleBoxClick = (box) => {
-    if (box.innerText !== "") {
-        return; // Do nothing if the box is already filled
-    }
-
-    const currentPlayer = turnO ? "O" : "X";
-    box.innerText = currentPlayer;
-    box.classList.add(turnO ? "o-text" : "x-text");
-    
-    moveCount++;
-    box.disabled = true; // Disable the clicked box
-
-    const winnerFound = checkWinner();
-
-    if (!winnerFound) {
-        turnO = !turnO; // Switch turns only if there's no winner yet
-        updateTurnIndicator();
-    }
+const startNewSession = () => {
+    // Clear session storage and reset scores to 0
+    sessionStorage.removeItem("ticTacToeScores");
+    scores = { x: 0, o: 0 };
+    updateScoreDisplay();
+    resetBoard();
 };
 
 const checkWinner = () => {
+    let isWinner = false;
     for (let pattern of winPatterns) {
-        let pos1Val = boxes[pattern[0]].innerText;
-        let pos2Val = boxes[pattern[1]].innerText;
-        let pos3Val = boxes[pattern[2]].innerText;
-
-        if (pos1Val !== "" && pos1Val === pos2Val && pos2Val === pos3Val) {
-            showWinner(pos1Val);
-            return true; // Winner found
+        const [pos1, pos2, pos3] = [boxes[pattern[0]].innerText, boxes[pattern[1]].innerText, boxes[pattern[2]].innerText];
+        if (pos1 !== "" && pos1 === pos2 && pos2 === pos3) {
+            showWinner(pos1);
+            isWinner = true;
+            break;
         }
     }
 
-    if (moveCount === 9) {
+    if (!isWinner && moveCount === 9) {
         showDraw();
-        return true; // It's a draw, game over
     }
-    return false; // No winner yet
 };
 
 const showWinner = (winnerSymbol) => {
@@ -101,7 +69,8 @@ const showWinner = (winnerSymbol) => {
     msg.innerText = `Congratulations, Winner is ${winnerName}!`;
     msgContainer.classList.remove("hide");
     disableBoxes();
-
+    
+    // Update score for the current session
     if (winnerSymbol === "O") scores.o++;
     else scores.x++;
     
@@ -115,22 +84,32 @@ const showDraw = () => {
     disableBoxes();
 };
 
-const resetGame = () => {
-    turnO = true;
-    moveCount = 0;
-    msgContainer.classList.add("hide");
-    enableBoxes();
-    updateTurnIndicator();
+const disableBoxes = () => {
+    boxes.forEach(box => box.disabled = true);
 };
 
-// --- Local Storage Functions ---
+const enableBoxes = () => {
+    for (let box of boxes) {
+        box.disabled = false;
+        box.innerText = "";
+        box.classList.remove("x-text", "o-text");
+    }
+};
+
+const updateTurnIndicator = () => {
+    const currentPlayerName = turnO ? players.o : players.x;
+    const currentPlayerSymbol = turnO ? "O" : "X";
+    turnIndicator.innerText = `${currentPlayerName}'s Turn (${currentPlayerSymbol})`;
+};
+
+// --- Session Storage for Score Persistence ---
 
 const saveScores = () => {
-    localStorage.setItem("ticTacToeScores", JSON.stringify(scores));
+    sessionStorage.setItem("ticTacToeScores", JSON.stringify(scores));
 };
 
 const loadScores = () => {
-    const savedScores = localStorage.getItem("ticTacToeScores");
+    const savedScores = sessionStorage.getItem("ticTacToeScores");
     if (savedScores) {
         scores = JSON.parse(savedScores);
     }
@@ -142,16 +121,9 @@ const updateScoreDisplay = () => {
     scoreODisplay.innerText = scores.o;
 };
 
-// --- Initial Game Setup ---
+// --- Event Listeners Setup ---
 
-// Attach the click event listener to each box
-boxes.forEach((box) => {
-    box.addEventListener("click", () => handleBoxClick(box));
-});
-
-// Event listeners for buttons
-newGameBtn.addEventListener("click", resetGame);
-resetBtn.addEventListener("click", resetGame);
+// Start a brand new session with fresh scores
 startGameBtn.addEventListener("click", () => {
     const p1Name = player1Input.value || "Player X";
     const p2Name = player2Input.value || "Player O";
@@ -164,6 +136,32 @@ startGameBtn.addEventListener("click", () => {
     startupModal.classList.add("hide");
     mainContent.classList.remove("hide");
 
-    loadScores();
-    resetGame(); // Call resetGame to ensure the board is ready for the first play
+    startNewSession(); // This function resets scores to zero
 });
+
+// "Play Again" button just resets the board, keeping the session score
+newGameBtn.addEventListener("click", resetBoard);
+
+// "Reset Score & New Game" button starts a fresh session
+resetBtn.addEventListener("click", startNewSession);
+
+// Add click listeners to each game box
+boxes.forEach((box) => {
+    box.addEventListener("click", () => {
+        if (box.innerText === "") {
+            const currentPlayer = turnO ? "O" : "X";
+            box.innerText = currentPlayer;
+            box.classList.add(turnO ? "o-text" : "x-text");
+            
+            moveCount++;
+            turnO = !turnO;
+            box.disabled = true;
+
+            updateTurnIndicator();
+            checkWinner();
+        }
+    });
+});
+
+// Load scores when the page loads. If it's a new session, this will be empty.
+loadScores();

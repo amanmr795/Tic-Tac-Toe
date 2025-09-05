@@ -3,40 +3,42 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tic Tac Toe Game</title>
+    <title>Tic-Tac-Toe Pro</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <!-- Startup Modal -->
+    <!-- Startup Modal for Player Names -->
     <div id="startup-modal">
         <div class="modal-content">
-            <h2>Welcome to Tic Tac Toe!</h2>
-            <input type="text" id="player1-name" placeholder="Enter Player 1 Name (X)" maxlength="15">
-            <input type="text" id="player2-name" placeholder="Enter Player 2 Name (O)" maxlength="15">
+            <h2>Welcome to Tic-Tac-Toe</h2>
+            <p>Enter player names to begin</p>
+            <input type="text" id="player1-name" placeholder="Player 1 Name (X)" required>
+            <input type="text" id="player2-name" placeholder="Player 2 Name (O)" required>
             <button id="start-game-btn">Start Game</button>
         </div>
     </div>
 
-    <!-- Main Game Content -->
+    <!-- Main Game Content (Initially Hidden) -->
     <div class="main-content hide">
         <header>
             <h1>Tic Tac Toe</h1>
             <div class="scoreboard">
                 <div class="score">
-                    <span id="p1-name">Player X (X)</span>: <span id="score-x">0</span>
+                    <p id="p1-name">Player 1 (X)</p>
+                    <span id="score-x">0</span>
                 </div>
                 <div class="score">
-                    <span id="p2-name">Player O (O)</span>: <span id="score-o">0</span>
+                    <p id="p2-name">Player 2 (O)</p>
+                    <span id="score-o">0</span>
                 </div>
             </div>
         </header>
 
         <main>
-            <div id="turn-indicator">Player's Turn</div>
-
+            <h2 id="turn-indicator"></h2>
             <div class="container">
                 <div class="game">
                     <button class="box"></button>
@@ -50,16 +52,17 @@
                     <button class="box"></button>
                 </div>
             </div>
-
-            <button id="reset-btn">Reset Game</button>
+            <!-- This button now resets the score streak as well -->
+            <button id="reset-btn">Reset Score & New Game</button>
         </main>
+        
+        <!-- Winner/Draw Message Container -->
+        <div class="msg-container hide">
+            <p id="msg">Winner</p>
+            <button id="new-btn">Play Again</button>
+        </div>
     </div>
-
-    <!-- Winner Message Container -->
-    <div class="msg-container hide">
-        <p id="msg">Winner</p>
-        <button id="new-btn">New Game</button>
-    </div>
-
+    
     <script src="script.js"></script>
 </body>
+</html>
